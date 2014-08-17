@@ -38,7 +38,7 @@ def index():
 	borrower_id = request.forms.get('borrowerId')
 	transaction_date = request.forms.get('transactionDate')
 	amount = request.forms.get('amount')
-	notes = request.forms.get('lenderId')
+	notes = request.forms.get('notes')
 	try:
 		return json.dumps(db.new_transaction(lender_id,borrower_id,transaction_date,amount,notes))
 	except ValueError as e:
@@ -46,11 +46,13 @@ def index():
 
 @app.route('/getTransactions', method='GET')
 def index():
-	"""get info for n most recent transactions.
-	   gets all transactions if query param n is 0"""
+	"""get info for n most recent transactions for given user ID.
+	   gets transactions for all users if user ID is missing
+	   gets all transactions if query param n is 0 or missing"""
 	db = settleupDB()
 	n = request.query.get('n')
-	return json.dumps(db.get_transactions(n))
+	user_id = request.query.get('userId')
+	return json.dumps(db.get_transactions(user_id,n))
 
 @app.route('/deleteTransaction', method='POST')
 def index():

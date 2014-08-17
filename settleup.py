@@ -59,16 +59,20 @@ class settleupDB(object):
 		result = self.c.fetchone()
 		return result
 
-	def get_transactions(self,n=0):
-		"""get n most recent transactions"""
+	def get_transactions(self,user_id=None,n=0):
+		"""get n most recent transactions for the given user id"""
 		if n > 0:
 			limit = 'LIMIT ' + str(n)
 		else:
 			limit = ''
+		if user_id:
+			where = 'WHERE lender_id=' + str(user_id) + ' OR borrower_id=' + str(user_id)
+		else:
+			where = ''
 		self.c.execute("""SELECT transaction_id, lender_id, borrower_id, CAST(transaction_date as CHAR) as transaction_date,
 			amount, notes, UNIX_TIMESTAMP(created_ts) as created_ts, 
 			UNIX_TIMESTAMP(last_updated_ts) as last_updated_ts
-			FROM transactions ORDER BY transaction_date DESC """ + limit + ';')
+			FROM transactions """ + where + """ ORDER BY transaction_date DESC """ + limit + ';')
 		results = self.c.fetchall()
 		return results		
 
