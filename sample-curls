@@ -1,0 +1,11 @@
+curl --data "name=torrey" http://localhost:6543/newUser
+curl --data "userId=8" http://localhost:6543/deleteUser
+curl http://localhost:6543/getUser?userId=9
+curl http://localhost:6543/getUser
+
+
+curl http://localhost:6543/getTransactions
+curl http://localhost:6543/getTransactions?n=2
+curl --data "transactionId=2" http://localhost:6543/deleteTransaction
+
+curl --data "lenderId=4&borrowerId=11&amount=10&transactionDate=2014-08-17&notes=testpost" http://localhost:6543/newTransaction
