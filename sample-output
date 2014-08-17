@@ -1,0 +1,33 @@
+dfreeman$ curl --data "name=nan" http://localhost:6543/newUser
+{"user_id": 12}
+
+dfreeman$ curl --data "userId=9" http://localhost:6543/deleteUser
+1
+
+dfreeman$ curl http://localhost:6543/getUser?userId=12
+{"created_ts": 1408303088, "last_updated_ts": 1408303088, "user_id": 12, "name": "nan", "total_borrowed": 0.0}
+
+dfreeman$ curl http://localhost:6543/getUser
+[{"created_ts": 1408259971, "last_updated_ts": 1408265359, "user_id": 4, "name": "joe", "total_borrowed": -26.0}, {"created_ts": 1408260011, "last_updated_ts": 1408264526, "user_id": 5, "name": "dave", "total_borrowed": 2.0}, {"created_ts": 1408260761, "last_updated_ts": 1408286929, "user_id": 6, "name": "bob", "total_borrowed": -30.0}, {"created_ts": 1408263711, "last_updated_ts": 1408263711, "user_id": 10, "name": "torrey", "total_borrowed": 0.0}, {"created_ts": 1408263859, "last_updated_ts": 1408265359, "user_id": 11, "name": "torrey", "total_borrowed": 22.0}, {"created_ts": 1408303088, "last_updated_ts": 1408303088, "user_id": 12, "name": "nan", "total_borrowed": 0.0}]
+
+dfreeman$ curl --data "lenderId=12&borrowerId=5&amount=10&transactionDate=2014-08-17&notes=sample-output" http://localhost:6543/newTransaction
+{"transaction_id": 10}
+
+dfreeman$ curl --data "lenderId=5&borrowerId=5&amount=10&transactionDate=2014-08-17&notes=sample-output" http://localhost:6543/newTransaction
+{"error": "borrower and lender must be distinct"}
+
+dfreeman$ curl --data "lenderId=5&borrowerId=200&amount=10&transactionDate=2014-08-17&notes=sample-output" http://localhost:6543/newTransaction
+{"error": "borrower or lender missing from users table"}
+
+dfreeman$ curl http://localhost:6543/getTransactions
+[{"created_ts": 1408265359, "notes": "4", "amount": 10.0, "transaction_date": "2014-08-17", "lender_id": 4, "borrower_id": 11, "transaction_id": 6, "last_updated_ts": 1408265359}, {"created_ts": 1408265515, "notes": "6", "amount": 10.0, "transaction_date": "2014-08-17", "lender_id": 6, "borrower_id": 9, "transaction_id": 7, "last_updated_ts": 1408265515}, {"created_ts": 1408286899, "notes": "6", "amount": 10.0, "transaction_date": "2014-08-17", "lender_id": 6, "borrower_id": 9, "transaction_id": 8, "last_updated_ts": 1408286899}, {"created_ts": 1408286929, "notes": "testpost", "amount": 10.0, "transaction_date": "2014-08-17", "lender_id": 6, "borrower_id": 9, "transaction_id": 9, "last_updated_ts": 1408286929}, {"created_ts": 1408303088, "notes": "sample-output", "amount": 10.0, "transaction_date": "2014-08-17", "lender_id": 12, "borrower_id": 5, "transaction_id": 10, "last_updated_ts": 1408303088}, {"created_ts": 1408265129, "notes": null, "amount": 12.0, "transaction_date": "2014-05-08", "lender_id": 4, "borrower_id": 11, "transaction_id": 5, "last_updated_ts": 1408265129}, {"created_ts": 1408260382, "notes": "test", "amount": 2.0, "transaction_date": "2014-05-02", "lender_id": 4, "borrower_id": 5, "transaction_id": 3, "last_updated_ts": 1408260382}, {"created_ts": 1408260408, "notes": "test", "amount": 2.0, "transaction_date": "2014-05-02", "lender_id": 4, "borrower_id": 8, "transaction_id": 4, "last_updated_ts": 1408260408}]
+
+dfreeman$ curl --data "transactionId=6" http://localhost:6543/deleteTransaction
+1
+
+dfreeman$ curl 'http://localhost:6543/getTransactions?userId=5&n=1'
+[{"created_ts": 1408303088, "notes": "sample-output", "amount": 10.0, "transaction_date": "2014-08-17", "lender_id": 12, "borrower_id": 5, "transaction_id": 10, "last_updated_ts": 1408303088}]
+
+dfreeman$ curl --data "transactionId=6" http://localhost:6543/deleteTransaction
+0
+
