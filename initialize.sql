@@ -3,6 +3,7 @@ sudo mysqld_safe --skip-grant-tables &
 mysql -u root
 */
 
+
 create database settleup;
 use settleup;
 
@@ -16,13 +17,22 @@ create table users (user_id INT not null auto_increment primary key,
 	last_updated_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-drop table transactions;
-create table transactions (transaction_id INT not null auto_increment primary key,
-	lender_id INT not null,
-	borrower_id INT not null,
-	transaction_date DATE,
-	amount FLOAT not null,
+drop table bills;
+create table bills (bill_id INT not null auto_increment primary key,
+	bill_date DATE not null,
+	bill_amount FLOAT not null,
 	notes VARCHAR(1024),
+	created_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+	last_updated_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+drop table orders;
+/* each bill is divided into one or more orders */
+create table orders (order_id INT not null auto_increment primary key,
+	bill_id INT not null,
+	user_id INT not null,
+	order_amount FLOAT not null,
+	amount_paid FLOAT not null DEFAULT 0,
 	created_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	last_updated_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

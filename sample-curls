@@ -6,15 +6,12 @@ curl http://localhost:6543/getUser?userId=12
 
 curl http://localhost:6543/getUser
 
-curl --data "lenderId=12&borrowerId=5&amount=10&transactionDate=2014-08-17&notes=sample-output" http://localhost:6543/newTransaction
+curl --data "order1=10|5|0&order2=13|10|15&billDate=2014-08-17&notes=test-bill" http://localhost:6543/newBill
 
-curl --data "lenderId=5&borrowerId=5&amount=10&transactionDate=2014-08-17&notes=sample-output" http://localhost:6543/newTransaction
+curl http://localhost:6543/getOrders
 
-curl --data "lenderId=5&borrowerId=200&amount=10&transactionDate=2014-08-17&notes=sample-output" http://localhost:6543/newTransaction
+curl 'http://localhost:6543/getOrders?userId=5&n=2'
 
-curl http://localhost:6543/getTransactions
-
-curl 'http://localhost:6543/getTransactions?userId=5&n=2'
-
+# not yet updated for new schemas
 curl --data "transactionId=6" http://localhost:6543/deleteTransaction
 
