@@ -9,6 +9,7 @@ use settleup;
 
 drop table users;
 create table users (user_id INT not null auto_increment primary key, 
+	group_id INT not null,
 	name VARCHAR(40) not null, 
 	total_borrowed FLOAT not null DEFAULT 0, 
 /* sign convention: if total_borrowed is positive, the user has borrowed more than she has lent.
@@ -36,6 +37,7 @@ create table orders (order_id INT not null auto_increment primary key,
 	created_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
 	last_updated_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
 
 
 

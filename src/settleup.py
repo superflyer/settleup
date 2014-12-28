@@ -10,15 +10,41 @@ class order(object):
 		self.order_amount = order_amount
 		self.amount_paid = amount_paid
 
+	def __repr__(self):
+		return '{id: '+str(self.user_id) + ', order_amount: '+str(self.order_amount) + ', amount_paid: '+str(self.amount_paid)+'}'
+
+	def __str__(self):
+		return self.__repr__()
 
 class settleupDB(object):
 
 	def __init__(self):
-		self.db = MySQLdb.connect(user='root',db='settleup', cursorclass=MySQLdb.cursors.DictCursor)
+		self.db = MySQLdb.connect(user='root',db='settleup',passwd='password',cursorclass=MySQLdb.cursors.DictCursor)
 		self.c = self.db.cursor()
 
-	def new_user(self,username):
-		self.c.execute("""INSERT INTO users (name) VALUES (%s);""", (username,))
+	def new_group(self,users):
+		"""create new group.  users is a list of user names (i.e. real names)."""
+		self.c.execute("""SELECT MAX(group_id) FROM users;""")
+		group_id = self.c.fetchone().values()[0]+1;
+		print(max_group)
+		results = []
+		for name in users:
+			results.append(self.new_user(group_id,name))
+		return results
+
+	def get_top_user(self,group_id):
+		"""get the user who has paid the most"""
+		self.c.execute("""SELECT user_id, name FROM users WHERE group_id=%s ORDER BY total_borrowed DESC LIMIT 1""", (group_id,))
+		result = self.c.fetchone()
+		return result
+
+	def get_group_users(self,group_id):
+		self.c.execute("""SELECT user_id, name, total_borrowed FROM users WHERE group_id=%s ORDER BY total_borrowed DESC;""", (group_id,))
+		results = self.c.fetchall()
+		return results
+
+	def new_user(self,group_id,username):
+		self.c.execute("""INSERT INTO users (group_id,name) VALUES (%s,%s);""", (group_id,username,))
 		self.c.execute("""SELECT MAX(user_id) as user_id FROM users;""")
 		self.db.commit()
 		result = self.c.fetchone()
@@ -57,7 +83,8 @@ class settleupDB(object):
 				raise ValueError('user ' + str(u.user_id) + ' is not in the users table')
 
 		# check input to make sure amount ordered == amount paid
-		if sum([u.order_amount - u.amount_paid for u in orders]) != 0:
+		print(orders)
+		if abs(sum([u.order_amount - u.amount_paid for u in orders])) > 0.01:
 			raise ValueError('total amount ordered does not equal total amount paid')
 
 		# insert a new bill into the table
@@ -100,7 +127,23 @@ class settleupDB(object):
 			UNIX_TIMESTAMP(b.created_ts) as created_ts, UNIX_TIMESTAMP(b.last_updated_ts) as last_updated_ts
 			FROM bills a JOIN orders b on a.bill_id=b.bill_id """ + where + """ ORDER BY bill_date DESC """ + limit + ';')
 		results = self.c.fetchall()
-		return results		
+		return results	
+
+	def get_group_history(self,group_id,n=0):
+		"""get n most recent bills for the given group, along with user who paid a non-negative amount.
+		currently assumes all bills are split evenly with one user paying."""
+		if n > 0:
+			limit = 'LIMIT ' + str(n)
+		else:
+			limit = ''
+		self.c.execute("""SELECT CAST(a.bill_date as CHAR) as bill_date, a.bill_amount, c.name as paid_by, a.notes
+			FROM bills a
+				JOIN orders b on a.bill_id=b.bill_id
+				JOIN users c on b.user_id=c.user_id
+			WHERE c.group_id=%s and b.amount_paid > 0 ORDER BY bill_date DESC """ + limit + ';', (group_id,))
+		results = self.c.fetchall()
+		return results
+
 
 	def delete_transaction(self,transaction_id):
 		result = self.c.execute("""SELECT * FROM transactions WHERE transaction_id=%s;""", (transaction_id,))

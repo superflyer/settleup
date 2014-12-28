@@ -2,10 +2,16 @@
 
 from bottle import route, run, template, Bottle
 from bottle import get, post, request
+from bottle import static_file
 
 from settleup import *
+import time
 
 app = Bottle()
+
+@app.route('/static/<filename>')
+def server_static(filename):
+	return static_file(filename, root='static')
 
 
 @app.route('/newUser', method='POST')
@@ -30,23 +36,55 @@ def index():
 	user_id = request.forms.get('userId')
 	return json.dumps(db.delete_user(user_id))
 
+@app.route('/newBill', method='GET')
+def index():
+	db = settleupDB()
+	group_id = request.query.get('groupId')
+	users = db.get_group_users(group_id)
+	top_user = db.get_top_user(group_id)
+	history = db.get_group_history(group_id)
+	return template("templates/newbill", today=time.strftime("%Y-%m-%d"), group=group_id, users=users, top_user=top_user, history=history)
+
 @app.route('/newBill', method='POST')
 def index():
-	"""create new bill.  returns the new bill id and order ids.  
+	"""create new bill.  returns the new bill id and order ids.
+	For now, assume all bills are split equally
+	parameters in the form:
+		group -- group ID
+		billDate
+		paid -- who paid the bill  
+		amount -- amount of bill
+		notes
 	order details are stored in the parameters order{i} in form {user_id}|{order_amount}|{amount_paid}"""
 	db = settleupDB()
+
+	# pull data out of the POST request
+	group_id = int(request.forms.get('group'))
+	bill_date = request.forms.get('billDate')
+	paid_uid = int(request.forms.get('paid'))
+	amount = float(request.forms.get('amount'))
+	notes = request.forms.get('notes')
+
+	users = db.get_group_users(group_id)
+	top_user = db.get_top_user(group_id)
 	orders = []
+
+	### split the order evenly
+	for u in users:
+		orders.append(order(u['user_id'],amount/len(users),amount if u['user_id']==paid_uid else 0))
+
+	### use this code if the bill is split unevenly
 	for u in request.forms.keys():
 		if u[:5] == 'order':
 			parsed_order = request.forms.get(u).strip().split('|')
 			numerical_order = [int(parsed_order[0]),float(parsed_order[1]),float(parsed_order[2])]
 			orders.append(order(*numerical_order))
-	bill_date = request.forms.get('billDate')
-	notes = request.forms.get('notes')
-	try:
-		return json.dumps(db.new_bill(orders,bill_date,notes))
-	except ValueError as e:
-		return '{"error": "' + str(e) + '"}'
+	###
+	result = db.new_bill(orders,bill_date,notes)
+	new_history = db.get_group_history(group_id)
+
+	return template("templates/newbill", today=time.strftime("%Y-%m-%d"), group=group_id, users=users, top_user=top_user, history=new_history)
+
 
 @app.route('/getOrders', method='GET')
 def index():
