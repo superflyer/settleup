@@ -6,6 +6,7 @@ from bottle import static_file
 
 from settleup import *
 import time
+import sys
 
 app = Bottle()
 
@@ -65,8 +66,6 @@ def index():
 	amount = float(request.forms.get('amount'))
 	notes = request.forms.get('notes')
 
-	users = db.get_group_users(group_id)
-	top_user = db.get_top_user(group_id)
 	orders = []
 
 	### split the order evenly
@@ -80,8 +79,14 @@ def index():
 			numerical_order = [int(parsed_order[0]),float(parsed_order[1]),float(parsed_order[2])]
 			orders.append(order(*numerical_order))
 	###
+
+	# add new order to the DB
 	result = db.new_bill(orders,bill_date,notes)
+
+	# pull new data to display on the page
 	new_history = db.get_group_history(group_id)
+	users = db.get_group_users(group_id)
+	top_user = db.get_top_user(group_id)
 
 	return template("templates/newbill", today=time.strftime("%Y-%m-%d"), group=group_id, users=users, top_user=top_user, history=new_history)
 
@@ -107,5 +112,7 @@ def index():
 
 
 if __name__=='__main__':
-	run(app, host='localhost', port=6543, reloader=True)
-	#run(app, host='0.0.0.0', port=6543)
+	if len(sys.argv > 1) and sys.argv[1] == '-l':
+		run(app, host='localhost', port=6543, reloader=True)
+	else:
+		run(app, host='0.0.0.0', port=6543)

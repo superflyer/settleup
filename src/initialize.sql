@@ -1,6 +1,9 @@
 /*
 sudo mysqld_safe --skip-grant-tables &
-mysql -u root
+mysql -u root 
+
+UPDATE mysql.user SET Password=PASSWORD('password') WHERE User='root';
+FLUSH PRIVILEGES;
 */
 
 
@@ -14,16 +17,17 @@ create table users (user_id INT not null auto_increment primary key,
 	total_borrowed FLOAT not null DEFAULT 0, 
 /* sign convention: if total_borrowed is positive, the user has borrowed more than she has lent.
    if total_borrowed is negative, she has lent more than she has borrowed. */
-	created_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+/*	created_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, */
 	last_updated_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+insert into users (group_id, name) values (0, 'Test User');
 
 drop table bills;
 create table bills (bill_id INT not null auto_increment primary key,
 	bill_date DATE not null,
 	bill_amount FLOAT not null,
 	notes VARCHAR(1024),
-	created_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+/*	created_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  */
 	last_updated_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
@@ -34,7 +38,7 @@ create table orders (order_id INT not null auto_increment primary key,
 	user_id INT not null,
 	order_amount FLOAT not null,
 	amount_paid FLOAT not null DEFAULT 0,
-	created_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+/*	created_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,  */
 	last_updated_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 

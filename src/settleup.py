@@ -26,7 +26,6 @@ class settleupDB(object):
 		"""create new group.  users is a list of user names (i.e. real names)."""
 		self.c.execute("""SELECT MAX(group_id) FROM users;""")
 		group_id = self.c.fetchone().values()[0]+1;
-		print(max_group)
 		results = []
 		for name in users:
 			results.append(self.new_user(group_id,name))
