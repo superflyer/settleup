@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import MySQLdb
 import MySQLdb.cursors
 import json
@@ -36,6 +38,13 @@ class settleupDB(object):
 		self.c.execute("""SELECT user_id, name FROM users WHERE group_id=%s ORDER BY total_borrowed DESC LIMIT 1""", (group_id,))
 		result = self.c.fetchone()
 		return result
+
+	def get_groups(self):
+		"""get all groups IDS.  exclude test groups with ID <= 0"""
+		self.c.execute("""SELECT DISTINCT group_id FROM users WHERE group_id > 0;""")
+		results = self.c.fetchall()
+		ids = [r['group_id'] for r in results]
+		return ids
 
 	def get_group_users(self,group_id):
 		self.c.execute("""SELECT user_id, name, total_borrowed FROM users WHERE group_id=%s ORDER BY total_borrowed DESC;""", (group_id,))
