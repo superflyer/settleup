@@ -12,9 +12,6 @@
    	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <link rel="stylesheet" href="/static/base.css" type="text/css">
-    <link rel="stylesheet" href="/static/index.css" type="text/css">
-    <link rel="stylesheet" href="/static/login.css" type="text/css">
-    <link rel="stylesheet" href="/static/calculated-shipping.css" type="text/css">
 
     
 </head>

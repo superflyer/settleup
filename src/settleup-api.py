@@ -43,7 +43,7 @@ def index():
 	name = request.forms.get('name')
 	return json.dumps(db.new_user(name))
 
-@app.route('/newGroup', method='POST')
+@app.route('/newGroup', method='GET')
 def index():
 	"""create new group."""
 	db = settleupDB()
