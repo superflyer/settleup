@@ -1,17 +1,11 @@
 <!DOCTYPE html>
-<!-- saved from url=(0069)https://www.etsy.com/join?ref=hdr&from_page=https://www.etsy.com/cart -->
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" xmlns:og="http://ogp.me/ns#" xmlns:fb="https://www.facebook.com/2008/fbml">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>SettleUp - Choose Your Group</title>
-    <!--
-	<meta name="js_dist_path" content="/assets/dist/js/">
-	<meta name="css_dist_path" content="/assets/dist/css/">
-	<meta name="dist" content="201412231419373086">
-    -->
 
    	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <link rel="stylesheet" href="/static/base.css" type="text/css">
+    <link rel="stylesheet" href="/styles/base.css" type="text/css">
     
 </head>
 

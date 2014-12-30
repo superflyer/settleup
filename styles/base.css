@@ -1,0 +1,66 @@
+body {
+  font-family: Calibri, Helvetica;
+  font-size: 14px;
+}
+
+h1 {
+  font-size: 16px;
+}
+
+table {
+  margin: 0;
+  padding: 0;
+}
+
+table th,
+table td {
+  padding-right: 10px;
+  text-align: left;
+}
+
+table .amount {
+  text-align: right;
+}
+
+input[type="date"],
+select {
+  box-sizing:content-box;
+  border-radius: 0px;
+  height: 30px;
+  margin: 5px 0;
+  width: 280px;
+}
+
+input[type="text"],
+input[type="number"]{
+  -webkit-appearance: none;
+  border: 1px solid #999;
+  border-radius: 0px;
+  box-sizing: content-box;
+  height: 30px;
+  margin: 5px 0px;
+  width: 280px;
+}
+
+button.green {
+  background-color: #68B82E;
+  border: 1px solid #60a62e;
+  border-radius: 0px;
+  color: #fff;
+  margin: 0px;
+  padding: 5px 40px;
+}
+
+.history_table {
+  border-collapse: collapse;
+  margin-top: 20px;
+  width: 100%;
+}
+
+.history_table .first_row {
+  border-bottom: 1px solid #666;
+}
+
+.history_table .amount:before {
+  content: '$';
+}

@@ -12,9 +12,9 @@ import sys
 
 app = Bottle()
 
-@app.route('/static/<filename>')
+@app.route('/styles/<filename>')
 def server_static(filename):
-	return static_file(filename, root='static')
+	return static_file(filename, root='styles')
 
 @app.route('/', method='GET')
 def index():
