@@ -18,9 +18,9 @@
 
 <h1> Current Tab </h1>
 
-<table class="current_tab" cellspacing="0" cellpadding="0">
+<table class="current_tab">
 	% for u in users:	
-		<tr><td>{{u['name']}} {{'owes' if u['total_borrowed'] >= 0 else 'is owed'}} ${{"%.0f" % abs(u['total_borrowed'])}}</td></td>
+		<tr><td>{{u['name']}} {{'borrowed' if u['total_borrowed'] >= 0 else 'lent'}} ${{"%.0f" % abs(u['total_borrowed'])}}</td></td>
 	% end
 </table>
 
@@ -30,6 +30,7 @@
 	<table>
 
 		<input type="hidden" name="group" value="{{group}}">
+		<input type="hidden" name="response" value="json">
 		<input placeholder="Date" type="date" name="billDate" value="{{today}}" /><br />
     	<select name="paid">
 	    	  % for u in users:
@@ -48,7 +49,7 @@
 	<tbody>
 	<tr class="first_row">
 		<th>Date</th>
-		<th>Bill Amount</th>
+		<th>Amount</th>
 		<th>Paid By</th>
 		<th>Notes</th>
 	</tr>

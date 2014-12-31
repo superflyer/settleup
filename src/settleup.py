@@ -137,6 +137,16 @@ class settleupDB(object):
 		results = self.c.fetchall()
 		return results	
 
+	def get_bill(self,bill_id):
+		"""get info for a specific bill"""
+		self.c.execute("""SELECT CAST(a.bill_date as CHAR) as bill_date, a.bill_amount, c.name as paid_by, a.notes
+			FROM bills a
+				JOIN orders b on a.bill_id=b.bill_id
+				JOIN users c on b.user_id=c.user_id
+			WHERE a.bill_id=%s and b.amount_paid > 0;""", (bill_id,))
+		results = self.c.fetchall()
+		return results	
+
 	def get_group_history(self,group_id,n=0):
 		"""get n most recent bills for the given group, along with user who paid a non-negative amount.
 		currently assumes all bills are split evenly with one user paying."""

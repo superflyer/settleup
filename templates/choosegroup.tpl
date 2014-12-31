@@ -16,7 +16,7 @@
 <h2> Choose your group </h2>
 
 	% for g in groups:
-	<p><form id="group{{g}}" method="post">
+	<p><form id="group{{g}}" method="post" action="./chooseGroup">
 		<input type="hidden" value={{g}} name="group">
 		<button type="submit" form="group{{g}}" class="green">
               {{', '.join([u['name'] for u in groups[g]])}}
