@@ -30,7 +30,7 @@
 	<table>
 
 		<input type="hidden" name="group" value="{{group}}">
-		<input type="hidden" name="response" value="json">
+		<input type="hidden" name="response" value="html">
 		<input placeholder="Date" type="date" name="billDate" value="{{today}}" /><br />
     	<select name="paid">
 	    	  % for u in users:

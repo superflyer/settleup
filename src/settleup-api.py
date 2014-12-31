@@ -115,7 +115,7 @@ def index():
 	# pull data out of the POST request
 	if request.forms.get('group'):
 		group_id = request.forms.get('group')
-	if request.get_cookie('group'):
+	elif request.get_cookie('group'):
 		group_id = request.get_cookie('group')
 	else:
 		# redirect to group chooser if no group cookie or form value
