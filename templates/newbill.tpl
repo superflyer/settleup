@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" xmlns:og="http://ogp.me/ns#" xmlns:fb="https://www.facebook.com/2008/fbml">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>SettleUp - New Bill</title>
+    <title>WideOpenTab - New Bill</title>
 
    	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
@@ -69,13 +69,13 @@
 		<input placeholder="Date" type="date" name="billDate" value="{{today}}" /><br />
     	<select name="paid">
 	    	  % for u in users:
-				  <option value="{{u['user_id']}}" {{'selected="selected"' if u['user_id']==top_user['user_id'] else ''}}>Paid by {{u['name']}}</option>
+				  <option value="{{u['user_id']}}" {{'selected="selected"' if u['user_id']==top_user['user_id'] else ''}}>{{u['name']}} paid</option>
 			  % end
 		</select><br />
-		<input type="radio" id="split" name="evensplit" value="True" checked
+		<input type="checkbox" id="split" name="evensplit" value="True" checked
 			onchange="return (togglePageElementVisibility('evensplit') + togglePageElementVisibility('unevensplit'))">Split evenly {{len(users)}} ways<br />
-		<input type="radio" id="split" name="evensplit" value="False"
-			onchange="return (togglePageElementVisibility('evensplit') + togglePageElementVisibility('unevensplit'))">Split unevenly<br />
+<!--		<input type="radio" id="split" name="evensplit" value="False"
+			onchange="return (togglePageElementVisibility('evensplit') + togglePageElementVisibility('unevensplit'))">Split unevenly<br /> -->
 		<div id="evensplit">
 			<input placeholder="Amount" type="number" name="amount" min="0" class="full-width"/><br />
 		</div>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" xmlns:og="http://ogp.me/ns#" xmlns:fb="https://www.facebook.com/2008/fbml">
 <head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>SettleUp - Choose Your Group</title>
+    <title>WideOpenTab - Choose Your Group</title>
 
    	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
@@ -11,7 +11,7 @@
 
 <body class="mobile is-responsive  guest  iphone en-US new_header is-global-nav is-touch" data-clearable-enabled="true">
 
-<h1>Welcome to SettleUp!</h1>
+<h1>Welcome to WideOpenTab!</h1>
 
 <h2> Choose your group </h2>
 
