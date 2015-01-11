@@ -115,5 +115,12 @@
 	</tbody>
 </table>
 
+<p>
+<form id="changeGroup" method="get" action="/">
+	<button type="submit" form="changeGroup" class="blue">
+          Select a different group
+    </button>
+</form>
+</p>
 
 </body></html>

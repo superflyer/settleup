@@ -60,6 +60,16 @@ button.green {
   width: 280px;
 }
 
+button.blue {
+  background-color: #49A7EB;
+  border: 1px solid #327AAD;
+  border-radius: 0px;
+  color: #fff;
+  margin: 0px;
+  padding: 5px 40px;
+  width: 280px;
+}
+
 .history_table {
   border-collapse: collapse;
   margin-top: 20px;
