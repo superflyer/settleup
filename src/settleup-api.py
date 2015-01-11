@@ -141,7 +141,7 @@ def index():
 		amount = float(request.forms.get('amount'))
 		for u in users:
 			user_amounts[u['user_id']] = amount/len(users)
-	else:
+	elif request.forms.get('evensplit') == "False":
 		# get each user's share from form data
 		for u in users:
 			user_amounts[u['user_id']] = float(request.forms.get('amount-'+str(u['user_id'])))

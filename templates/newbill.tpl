@@ -72,9 +72,9 @@
 				  <option value="{{u['user_id']}}" {{'selected="selected"' if u['user_id']==top_user['user_id'] else ''}}>Paid by {{u['name']}}</option>
 			  % end
 		</select><br />
-		<input type="radio" id="split" name="evensplit" value="true" checked
+		<input type="radio" id="split" name="evensplit" value="True" checked
 			onchange="return (togglePageElementVisibility('evensplit') + togglePageElementVisibility('unevensplit'))">Split evenly {{len(users)}} ways<br />
-		<input type="radio" id="split" name="evensplit" value="false"
+		<input type="radio" id="split" name="evensplit" value="False"
 			onchange="return (togglePageElementVisibility('evensplit') + togglePageElementVisibility('unevensplit'))">Split unevenly<br />
 		<div id="evensplit">
 			<input placeholder="Amount" type="number" name="amount" min="0" class="full-width"/><br />
