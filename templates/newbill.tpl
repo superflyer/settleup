@@ -7,16 +7,53 @@
 
     <link rel="stylesheet" href="/styles/base.css" type="text/css">
 
-    
+
+    <script type="text/javascript"><!--
+		/* Script by: www.jtricks.com
+		 * Version: 20090221
+		 * Latest version:
+		 * www.jtricks.com/javascript/blocks/showinghiding.html
+		 */
+		function showPageElement(what)
+		{
+		    var obj = typeof what == 'object'
+		        ? what : document.getElementById(what);
+
+		    obj.style.display = 'block';
+		    return false;
+		}
+
+		function hidePageElement(what)
+		{
+		    var obj = typeof what == 'object'
+		        ? what : document.getElementById(what);
+
+		    obj.style.display = 'none';
+		    return false;
+		}
+
+		function togglePageElementVisibility(what)
+		{
+		    var obj = typeof what == 'object'
+		        ? what : document.getElementById(what);
+
+		    if (obj.style.display == 'none')
+		        obj.style.display = 'block';
+		    else
+		        obj.style.display = 'none';
+		    return false;
+		}
+	//--></script>
 </head>
 
-<body class="mobile is-responsive  guest  iphone en-US new_header is-global-nav is-touch" data-clearable-enabled="true">
+<body class="mobile is-responsive  guest  iphone en-US new_header is-global-nav is-touch" data-clearable-enabled="true"
+	onload="return hidePageElement('unevensplit')">
 
 
 
-<h2>It's {{top_user['name']}}'s turn to pay!</h2>
+<h1>It's {{top_user['name']}}'s turn to pay!</h1>
 
-<h1> Current Tab </h1>
+<h2> Current Tab </h2>
 
 <table class="current_tab">
 	% for u in users:	
@@ -24,21 +61,35 @@
 	% end
 </table>
 
-<h1> New Bill </h1>
+<h2> New Bill </h2>
 	<form id="billInfo" method="post" action="newBill">
-
-	<table>
 
 		<input type="hidden" name="group" value="{{group}}">
 		<input type="hidden" name="response" value="html">
 		<input placeholder="Date" type="date" name="billDate" value="{{today}}" /><br />
     	<select name="paid">
 	    	  % for u in users:
-				  <option value="{{u['user_id']}}" {{'selected="selected"' if u['user_id']==top_user['user_id'] else ''}}>{{u['name']}}</option>
+				  <option value="{{u['user_id']}}" {{'selected="selected"' if u['user_id']==top_user['user_id'] else ''}}>Paid by {{u['name']}}</option>
 			  % end
 		</select><br />
-		<input placeholder="Amount" type="number" name="amount" min="0" /><br />
-		<input placeholder="Notes" type="text" name="notes" /><br />
+		<input type="radio" id="split" name="evensplit" value="true" checked
+			onchange="return (togglePageElementVisibility('evensplit') + togglePageElementVisibility('unevensplit'))">Split evenly {{len(users)}} ways<br />
+		<input type="radio" id="split" name="evensplit" value="false"
+			onchange="return (togglePageElementVisibility('evensplit') + togglePageElementVisibility('unevensplit'))">Split unevenly<br />
+		<div id="evensplit">
+			<input placeholder="Amount" type="number" name="amount" min="0" class="full-width"/><br />
+		</div>
+		<div id="unevensplit">
+			<table>
+			% for u in users:
+			<tr>
+				<td>{{u['name']}}'s share: </td>
+				<td><input placeholder="Amount" type="number" name="amount-{{u['user_id']}}" min="0" class="half-width"/></td>
+			<tr>
+			% end
+			</table>
+		</div>
+		<input placeholder="Notes" type="text" name="notes" class="full-width" /><br />
    		<button type="submit" form="billInfo" class="green">
               Split It!
         </button>

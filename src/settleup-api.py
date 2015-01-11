@@ -6,6 +6,7 @@ from bottle import static_file
 
 from settleup import *
 
+from MySQLdb import escape_string
 from datetime import datetime
 import time
 import sys
@@ -71,7 +72,9 @@ def index():
 @app.route('/newBill', method='GET')
 def index():
 	db = settleupDB()
-	if request.get_cookie('group'):
+	if request.query.get('group'):
+		group_id = request.query.get('group')
+	elif request.get_cookie('group'):
 		group_id = request.get_cookie('group')
 	else:
 		# redirect to group chooser if no group cookie
@@ -91,7 +94,6 @@ def index():
 	elif request.get_cookie('group'):
 		group_id = request.get_cookie('group')
 	else:
-		# redirect to group chooser if no group cookie
 		return """{"Error":"Must pass group ID via cookie or query parameter."}"""
 
 	db = settleupDB()
@@ -106,8 +108,10 @@ def index():
 	parameters in the form:
 		group -- group ID
 		billDate
-		paid -- who paid the bill  
-		amount -- amount of bill
+		paid -- who paid the bill
+		evensplit -- true if bill is split evenly, else missing
+		amount -- amount of bill, when it's split evenly
+		amount-{user_id} -- share of bill belonging to specified user
 		notes
 	order details are stored in the parameters order{i} in form {user_id}|{order_amount}|{amount_paid}"""
 	db = settleupDB()
@@ -120,6 +124,7 @@ def index():
 	else:
 		# redirect to group chooser if no group cookie or form value
 		return """<script> window.location.replace("/"); </script>"""
+	users = db.get_group_users(group_id)
 
 	response_type = request.forms.get('response')
 	if response_type not in ['html','json']:
@@ -127,22 +132,28 @@ def index():
 
 	bill_date = request.forms.get('billDate')
 	paid_uid = int(request.forms.get('paid'))
-	amount = float(request.forms.get('amount'))
-	notes = request.forms.get('notes')
+	notes = escape_string(request.forms.get('notes'))
 
-	### split the order evenly
+	# compute each user's share
+	user_amounts = {}
+	if request.forms.get('evensplit') == "True":
+		# split bill evenly among all users
+		amount = float(request.forms.get('amount'))
+		for u in users:
+			user_amounts[u['user_id']] = amount/len(users)
+	else:
+		# get each user's share from form data
+		for u in users:
+			user_amounts[u['user_id']] = float(request.forms.get('amount-'+str(u['user_id'])))
+		amount = sum(user_amounts.values())
+	print user_amounts
+	print amount
+
+	# create order objects
 	orders = []
-	users = db.get_group_users(group_id)
 	for u in users:
-		orders.append(order(u['user_id'],amount/len(users),amount if u['user_id']==paid_uid else 0))
-
-	### use this code if the bill is split unevenly
-	for u in request.forms.keys():
-		if u[:5] == 'order':
-			parsed_order = request.forms.get(u).strip().split('|')
-			numerical_order = [int(parsed_order[0]),float(parsed_order[1]),float(parsed_order[2])]
-			orders.append(order(*numerical_order))
-	###
+		# order object takes (user_id, user_share, amount_paid)
+		orders.append(order(u['user_id'], user_amounts[u['user_id']], amount if u['user_id']==paid_uid else 0))
 
 	# add new order to the DB
 	result = db.new_bill(orders,bill_date,notes)

@@ -4,6 +4,10 @@ body {
 }
 
 h1 {
+  font-size: 18px;
+}
+
+h2 {
   font-size: 16px;
 }
 
@@ -42,6 +46,10 @@ input[type="number"]{
   width: 280px;
 }
 
+input[type="number"].half-width {
+  width: 140px;
+}
+
 button.green {
   background-color: #68B82E;
   border: 1px solid #60a62e;
@@ -49,6 +57,7 @@ button.green {
   color: #fff;
   margin: 0px;
   padding: 5px 40px;
+  width: 280px;
 }
 
 .history_table {
