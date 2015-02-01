@@ -3,7 +3,7 @@
 import MySQLdb
 import MySQLdb.cursors
 import json
-
+import re
 
 class order(object):
 	"""object to keep track of individual items in a bill"""
@@ -173,6 +173,23 @@ class settleupDB(object):
 			self.db.commit()
 		return result
 
+
+def parse_amount(raw_amount):
+	"""Parses a user-entered string into a decimal dollar amount 
+		by stripping leading and trailing non-numerical characters."""
+	if not raw_amount:
+		return 0.0
+	p = re.compile('^[^0-9]*([0-9]*\.?[0-9]*)[^0-9]*$')
+ 	m = p.match(raw_amount)
+ 	if not m:
+ 		raise ValueError
+ 	s = m.groups()[0]
+ 	if not s:
+ 		raise ValueError
+ 	if s == '.':
+ 		raise ValueError
+	d = float(s)
+	return d
 
 
 if __name__ == '__main__':

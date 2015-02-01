@@ -128,7 +128,7 @@ def index():
 
 	response_type = request.forms.get('response')
 	if response_type not in ['html','json']:
-		return """Error: response parameter must be html or json."""
+		return """Error: Response parameter must be html or json."""
 
 	bill_date = request.forms.get('billDate')
 	paid_uid = int(request.forms.get('paid'))
@@ -136,16 +136,19 @@ def index():
 
 	# compute each user's share
 	user_amounts = {}
-	if request.forms.get('evensplit') == "True":
-		# split bill evenly among all users
-		amount = float(request.forms.get('amount'))
-		for u in users:
-			user_amounts[u['user_id']] = amount/len(users)
-	else: # if request.forms.get('evensplit') == "False":
-		# get each user's share from form data
-		for u in users:
-			user_amounts[u['user_id']] = float(request.forms.get('amount-'+str(u['user_id'])))
-		amount = sum(user_amounts.values())
+	try:
+		if request.forms.get('evensplit') == "True":
+			# split bill evenly among all users
+			amount = parse_amount(request.forms.get('amount'))
+			for u in users:
+				user_amounts[u['user_id']] = amount/len(users)
+		else: # if request.forms.get('evensplit') == "False":
+			# get each user's share from form data
+			for u in users:
+				user_amounts[u['user_id']] = parse_amount(request.forms.get('amount-'+str(u['user_id'])))
+			amount = sum(user_amounts.values())
+	except ValueError:
+		return """Error: Amounts entered must be numeric."""
 	print user_amounts
 	print amount
 
