@@ -159,7 +159,10 @@ def index():
 		orders.append(order(u['user_id'], user_amounts[u['user_id']], amount if u['user_id']==paid_uid else 0))
 
 	# add new order to the DB
-	result = db.new_bill(orders,bill_date,notes)
+	try:
+		result = db.new_bill(orders,bill_date,notes)
+	except ValueError as e:
+		return "Error: " + e
 
 	# pull new data to display on the page
 	new_users = db.get_group_users(group_id)

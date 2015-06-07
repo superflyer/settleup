@@ -96,8 +96,15 @@ class settleupDB(object):
 		if abs(sum([u.order_amount - u.amount_paid for u in orders])) > 0.01:
 			raise ValueError('total amount ordered does not equal total amount paid')
 
-		# insert a new bill into the bills table
 		bill_total = sum([u.order_amount for u in orders])
+
+		# check to make sure this isn't a duplicate
+		result = self.c.execute("""SELECT * FROM bills WHERE bill_date=%s AND bill_amount=%s and notes=%s;""",
+			(bill_date, bill_total, notes))
+		if result:
+			raise ValueError('duplicate entry')
+
+		# insert a new bill into the bills table
 		self.c.execute("""INSERT INTO bills (bill_date, bill_amount, notes) 
 			VALUES (%s,%s,%s);""", (bill_date, bill_total, notes))
 		self.c.execute("""SELECT MAX(bill_id) as bill_id FROM bills;""")
