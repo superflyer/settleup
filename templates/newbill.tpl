@@ -100,7 +100,7 @@
 	<tbody>
 	<tr class="first_row">
 		<th>Date</th>
-		<th>Amount</th>
+		<th class="amount_header">Amount</th>
 		<th>Paid By</th>
 		<th>Notes</th>
 	</tr>
@@ -108,12 +108,17 @@
 	<tr>
 		<td>{{h['bill_date']}}</td>
 		<td class="amount">{{"%.2f" % h['bill_amount']}}</td>
-		<td>{{h['paid_by']}}</td>
+		<td>{{h['paid_by'] + ('*' if not h['equal_split'] else '')}}</td>
 		<td>{{h['notes']}}</td>
 	</tr>
 	% end
 	</tbody>
 </table>
+
+
+<p class="history_table">
+	{{'* Bill was split unequally' if sum([h['equal_split'] for h in history]) != len(history) else ''}}
+</p>
 
 <p>
 <form id="changeGroup" method="get" action="/">

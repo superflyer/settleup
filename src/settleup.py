@@ -162,11 +162,15 @@ class settleupDB(object):
 			limit = 'LIMIT ' + str(n)
 		else:
 			limit = ''
-		self.c.execute("""SELECT CAST(a.bill_date as CHAR) as bill_date, a.bill_amount, c.name as paid_by, a.notes
+		self.c.execute("""SELECT 
+				CAST(a.bill_date as CHAR) as bill_date, a.bill_amount, c.name as paid_by, a.notes,
+				CASE WHEN a.bill_amount - b.order_amount*(SELECT count(*) num_users FROM users WHERE group_id=%s) 
+					< 0.10 THEN 1 ELSE 0 END as equal_split
 			FROM bills a
 				JOIN orders b on a.bill_id=b.bill_id
 				JOIN users c on b.user_id=c.user_id
-			WHERE c.group_id=%s and b.amount_paid > 0 ORDER BY bill_date DESC """ + limit + ';', (group_id,))
+			WHERE c.group_id=%s and b.amount_paid > 0 
+			ORDER BY bill_date DESC """ + limit + ';', (group_id,group_id))
 		results = self.c.fetchall()
 		return results
 

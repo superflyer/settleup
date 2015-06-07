@@ -80,6 +80,10 @@ button.blue {
   border-bottom: 1px solid #666;
 }
 
+.history_table .first_row .amount_header {
+  text-align: right;
+}
+
 .history_table .amount:before {
   content: '$';
 }

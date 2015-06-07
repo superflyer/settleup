@@ -162,7 +162,7 @@ def index():
 	try:
 		result = db.new_bill(orders,bill_date,notes)
 	except ValueError as e:
-		return "Error: " + e
+		return "Error: " + str(e)
 
 	# pull new data to display on the page
 	new_users = db.get_group_users(group_id)
