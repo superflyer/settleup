@@ -47,6 +47,7 @@ class settleupDB(object):
 		return ids
 
 	def get_group_users(self,group_id):
+		"""get users for a particular group"""
 		self.c.execute("""SELECT user_id, name, total_borrowed FROM users WHERE group_id=%s ORDER BY total_borrowed DESC;""", (group_id,))
 		results = self.c.fetchall()
 		return results
@@ -95,7 +96,7 @@ class settleupDB(object):
 		if abs(sum([u.order_amount - u.amount_paid for u in orders])) > 0.01:
 			raise ValueError('total amount ordered does not equal total amount paid')
 
-		# insert a new bill into the table
+		# insert a new bill into the bills table
 		bill_total = sum([u.order_amount for u in orders])
 		self.c.execute("""INSERT INTO bills (bill_date, bill_amount, notes) 
 			VALUES (%s,%s,%s);""", (bill_date, bill_total, notes))
@@ -163,15 +164,29 @@ class settleupDB(object):
 		return results
 
 
-	def delete_transaction(self,transaction_id):
-		result = self.c.execute("""SELECT * FROM transactions WHERE transaction_id=%s;""", (transaction_id,))
-		if result:
-			row = self.c.fetchone()
-			self.c.execute("""DELETE FROM transactions WHERE transaction_id=%s;""", (transaction_id,))
-			self.c.execute("""UPDATE users SET total_borrowed = total_borrowed - %s WHERE user_id = %s;""", (row['amount'], row['borrower_id']))
-			self.c.execute("""UPDATE users SET total_borrowed = total_borrowed + %s WHERE user_id = %s;""", (row['amount'], row['lender_id']))
-			self.db.commit()
-		return result
+	def delete_bill(self,bill_id):
+		# get orders for this bill from the orders table
+		self.c.execute("""SELECT * FROM orders WHERE bill_id=%s;""", (bill_id,))
+		orders = self.c.fetchall()
+
+		# check to make sure there are results to delete
+		if not orders:
+			raise ValueError('Bill not found in the DB')
+
+		# update balance for each user
+		for u in orders:
+			# update balance for that user
+			self.c.execute("""UPDATE users SET total_borrowed = total_borrowed + %s - %s WHERE user_id = %s;""",
+				(u['amount_paid'], u['order_amount'], u['user_id']))
+
+		# delete orders from orders table
+		self.c.execute("""DELETE FROM orders WHERE bill_id=%s;""", (bill_id,))
+
+		# delete bill from bills table
+		self.c.execute("""DELETE FROM bills WHERE bill_id=%s;""", (bill_id,))
+
+		self.db.commit()
+		return(orders);
 
 
 def parse_amount(raw_amount):
