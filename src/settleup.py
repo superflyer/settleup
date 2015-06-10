@@ -164,7 +164,7 @@ class settleupDB(object):
 			limit = ''
 		self.c.execute("""SELECT 
 				CAST(a.bill_date as CHAR) as bill_date, a.bill_amount, c.name as paid_by, a.notes,
-				CASE WHEN a.bill_amount - b.order_amount*(SELECT count(*) num_users FROM users WHERE group_id=%s) 
+				CASE WHEN ABS(a.bill_amount - b.order_amount*(SELECT count(*) num_users FROM users WHERE group_id=%s)) 
 					< 0.10 THEN 1 ELSE 0 END as equal_split
 			FROM bills a
 				JOIN orders b on a.bill_id=b.bill_id
