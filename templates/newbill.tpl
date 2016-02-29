@@ -77,7 +77,7 @@
 <!--		<input type="radio" id="split" name="evensplit" value="False"
 			onchange="return (togglePageElementVisibility('evensplit') + togglePageElementVisibility('unevensplit'))">Split unevenly<br /> -->
 		<div id="evensplit">
-			<input placeholder="Amount" type="number" name="amount" min="0" class="full-width"/><br />
+			<input placeholder="Amount" type="number" name="amount" step="0.01" min="0" class="full-width"/><br />
 		</div>
 		<div id="unevensplit">
 			<table>
